@@ -1,0 +1,34 @@
+## README
+
+### FILE STRUCTOR
+notUse 為目前沒有用到的程式碼
+test 單元測試的檔案
+====
+│  .gitignore
+│  ExceptionHandler.py
+│  myFastapi.py
+│  myMiddleware.py
+│  README.adoc
+│
+├─model
+│  │  Result.py
+│  │
+│  └─__pycache__
+│          Result.cpython-313.pyc
+│
+├─notUse
+│      aaa.json
+│      Pojos.py
+│
+├─test
+│      pandaEtl_parse.py
+│      testMapping.py
+│      testPdfplumber.py
+│      testReadTable.py
+│      testWorkExperience.py
+│      test_example.py
+│
+├─utils 
+│     myPDFPlumber.py 
+|
+====
