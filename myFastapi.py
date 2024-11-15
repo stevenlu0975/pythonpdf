@@ -12,7 +12,8 @@ from myMiddleware import *
 
 middleware = [
     Middleware(PathMiddleWare),
-    # Middleware(SecondMiddleWare)
+    Middleware(UploadFIleMiddleWare),
+    Middleware(PDFFileMiddleWare)
 ]
 
 # # 建立 table_index 和 mappingClass 函數的對應關係
@@ -35,7 +36,7 @@ app.add_exception_handler(HTTPException, HTTPExceptionHandler)
 #async def upload_pdf(file: UploadFile = File(...)) -> Dict[str, Union[str, List[Dict[str, Union[str, List[List[str]]]]]]]:
 async def upload_pdf(file: UploadFile,request: Request):
    
-    
+
     # 檢查是否有文件上傳
     if not file:
         raise HTTPException(status_code=400, detail="No file uploaded. Please upload a PDF file.")
@@ -67,10 +68,10 @@ async def parsetToJson(file):
                         "table_index": table_index + 1,
                         "data": table
                     })
-        return {
+        return Result.success({
             # "text": pdf_text,
             "tables": process_tables(pdf_tables)
-        }
+        }).to_dict()
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Error processing PDF file: {str(e)}")
 

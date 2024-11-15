@@ -3,13 +3,10 @@ from fastapi.responses import JSONResponse
 from fastapi.exceptions import RequestValidationError
 from starlette.exceptions import HTTPException as StarletteHTTPException
 from model.Result import *
-class UnicornException(Exception):
-    def __init__(self, name: str):
-        self.name = name
 
-
-# app = FastAPI()
-
+StarletteHTTPExceptionHandlerCode = {"Field required" : 42201,"Missing boundary in multipart.":42202}
+RequestValidationErrorHandlerCode={}
+HTTPExceptionHandler={}
 
 # fastapi 自訂的exception 例如: 以get訪問
 async def StarletteHTTPExceptionHandler(request: Request, exc: StarletteHTTPException):
@@ -20,7 +17,7 @@ async def StarletteHTTPExceptionHandler(request: Request, exc: StarletteHTTPExce
         status_code=status_code,
         # content={"message": f"Oops! {exc.name} did something. There goes a rainbow..."},
         # content={"message": f"Oops! did something. There goes a rainbow..."},
-       content=Result.error(detail).to_dict(),
+       content=Result.error_with_message(detail).set_code(status_code).to_dict(),
     )
 
 #422 沒有contenttype等等 
@@ -36,7 +33,7 @@ async def RequestValidationErrorHandler(request: Request, exc: RequestValidation
         # content={
         #     "detail2": f"Method Not Allowed: {', '.join(error_msgs) or 'This method is not supported for the requested resource.'}"
         # },
-        content=Result.error(error_message).to_dict(),
+        content=Result.error_with_message(error_message).set_code(422).to_dict(),
     )
 # 手動設置的exception
 async def HTTPExceptionHandler(request: Request, exc: HTTPException):
@@ -51,6 +48,6 @@ async def HTTPExceptionHandler(request: Request, exc: HTTPException):
         status_code=status_code,
         # content={"message": f"Oops! {exc.name} did something. There goes a rainbow..."},
         # content={"message": f"Oops! did something. There goes a rainbow..."},
-        content=Result.error(detail).to_dict(),
+        content=Result.error_with_message(detail).set_code(status_code).to_dict(),
     )
 
