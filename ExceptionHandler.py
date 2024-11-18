@@ -3,56 +3,47 @@ from fastapi.responses import JSONResponse
 from fastapi.exceptions import RequestValidationError
 from starlette.exceptions import HTTPException as StarletteHTTPException
 from model.Result import *
-
+from slowapi import Limiter
+from slowapi.util import get_remote_address
+from slowapi.errors import RateLimitExceeded
 
 # fastapi 自訂的exception 例如: 以get訪問
 async def StarletteHTTPExceptionHandler(request: Request, exc: StarletteHTTPException):
-        # 捕獲詳細錯誤訊息
     status_code = exc.status_code
     detail = exc.detail
     return JSONResponse(
         status_code=status_code,
-        # content={"message": f"Oops! {exc.name} did something. There goes a rainbow..."},
-        # content={"message": f"Oops! did something. There goes a rainbow..."},
-       content=Result.error_with_message(detail).set_code(status_code).to_dict(),
+        content=Result.error_with_message(detail).set_code(status_code).to_dict(),
     )
 
 #422 沒有contenttype等等 
 async def RequestValidationErrorHandler(request: Request, exc: RequestValidationError):
-    # 捕獲詳細錯誤訊息
-    errors = exc.errors()  # 返回錯誤的列表
-    error_msgs = [error['msg'] for error in errors]  # 提取每個錯誤的 msg
-    # 將錯誤消息合併成一個字符串，而不是列表
+    errors = exc.errors()  
+    error_msgs = [error['msg'] for error in errors]  
     error_message = ', '.join(error_msgs)
     
     return JSONResponse(
         status_code=422,
-        # content={
-        #     "detail2": f"Method Not Allowed: {', '.join(error_msgs) or 'This method is not supported for the requested resource.'}"
-        # },
-        content=Result.error_with_message(error_message).set_code(422).to_dict(),
+        content=Result.error_with_message(error_message).set_code(StatusCodeEnum.REQUEST_PARAM_VALIDATION_ERROR.value).to_dict(),
     )
 # 手動設置的exception
 async def HTTPExceptionHandler(request: Request, exc: HTTPException):
-        # 捕獲詳細錯誤訊息
     status_code = exc.status_code
     detail = exc.detail
-    # content:Any
-    # 500改成415
-    if status_code == 500:
-        status_code=415
 
-    if detail is Result:
-        print("detail is Result")
-        content=detail.to_dict()
+    if isinstance(detail, Result):
+        content=detail
+    elif isinstance(detail, str):
+        content=Result.error_with_message(detail).set_code(StatusCodeEnum.OTHER_HTTPeXCEPTION)
     else:
-        print("aaaaaaa")
-        content=Result.error_with_message(detail).set_code(status_code).to_dict()
+        content=Result.error(StatusCodeEnum.UNKNOWN_DETAIL_TYPE)
     return JSONResponse(
         status_code=status_code,
-        # content={"message": f"Oops! {exc.name} did something. There goes a rainbow..."},
-        # content={"message": f"Oops! did something. There goes a rainbow..."},
-        # content=Result.error_with_message(detail).set_code(status_code).to_dict(),
-        content=content,
+        content=content.to_dict(),
     )
 
+async def rate_limit_errorHandler(request: Request, exc: RateLimitExceeded):
+    return JSONResponse(
+        status_code=429,
+        content=Result.error_with_message("Please wait before sending more requests").set_code(5003).to_dict()
+    )

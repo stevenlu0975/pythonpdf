@@ -7,7 +7,6 @@ class Result(Generic[T]):
         self.code = code
         self.message = message
         self.data = data
-    # 覆寫 __dict__ 方法
     def to_dict(self):
         if self.message == "":
             self.message = StatusCodes.get_message(self.code)
@@ -33,7 +32,7 @@ class Result(Generic[T]):
         return result
     @staticmethod
     def error(code: StatusCodeEnum) -> 'Result[T]':
-        """只傳 code，根據 code 取得對應的 message"""
+        
         result = Result[T]()
         result.code = code.value
         result.message = StatusCodes.get_message(result.code)
