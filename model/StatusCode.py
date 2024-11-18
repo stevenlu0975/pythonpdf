@@ -23,13 +23,13 @@ class StatusCodes:
             "message": "No content type",
         },
         1002: {
-            "message": "Content type illegel",
+            "message": "Content type illegal",
         },
         1003: {
             "message": "Missing boundary in multipart",
         },
         2001: {
-            "message": "request not allowed"
+            "message": "Request not allowed"
         },
         3001: {
             "message": "File type not supported. Please upload a PDF file"
@@ -38,7 +38,7 @@ class StatusCodes:
             "message": "Error processing PDF file"
         },
         5001: {
-            "message": "unknown message detail type error"
+            "message": "Unknown message detail type error"
         },
         3003:{
             "message": "No file uploaded. Please upload a PDF file"

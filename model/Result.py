@@ -19,7 +19,7 @@ class Result(Generic[T]):
     @staticmethod
     def success(data: Optional[T] = None) -> 'Result[T]':
         result = Result[T]()
-        result.code = StatusCodes.get_status(200)
+        result.code = StatusCodeEnum.SUCCESS
         result.message = "success"
         result.data = data
         return result

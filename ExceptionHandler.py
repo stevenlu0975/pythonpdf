@@ -34,7 +34,7 @@ async def HTTPExceptionHandler(request: Request, exc: HTTPException):
     if isinstance(detail, Result):
         content=detail
     elif isinstance(detail, str):
-        content=Result.error_with_message(detail).set_code(StatusCodeEnum.OTHER_HTTPeXCEPTION)
+        content=Result.error_with_message(detail).set_code(StatusCodeEnum.OTHER_HTTPEXCEPTION)
     else:
         content=Result.error(StatusCodeEnum.UNKNOWN_DETAIL_TYPE)
     return JSONResponse(
