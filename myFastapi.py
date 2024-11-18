@@ -38,12 +38,18 @@ async def upload_pdf(file: UploadFile,request: Request):
    
 
     # 檢查是否有文件上傳
-    if not file:
-        raise HTTPException(status_code=400, detail="No file uploaded. Please upload a PDF file.")
+    # if not file:
+    #     raise HTTPException(status_code=400, detail="No file uploaded. Please upload a PDF file.")
     
     # 檢查文件類型
+    
     if not file.filename.endswith('.pdf'):
-        raise HTTPException(status_code=400, detail="File type not supported. Please upload a PDF file.")
+        print(f"*************** {StatusCodes.get_message(StatusCodeEnum.NOT_PDF_FILE)}")
+        # raise HTTPException(status_code=400, detail="File type not supported. Please upload a PDF file.")
+        # raise HTTPException(status_code=400,  detail=StatusCodes.get_message(StatusCodeEnum.NOT_PDF_FILE.value))
+        raise HTTPException(status_code=400,  detail=Result.error(StatusCodeEnum.NOT_PDF_FILE))
+        # raise HTTPException(status_code=400,  detail="12345678")
+    
     print(request.url.path)
     return await parsetToJson(file)
 

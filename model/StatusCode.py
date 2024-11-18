@@ -6,9 +6,9 @@ class StatusCodeEnum(Enum):
     NO_CONTENT_TYPE = 42200
     CONTENT_TYPE_ILLEGAL = 42201
     MISSING_BOUNDARY = 42202
-    FILED_NO_DATA = 42203
-    FILED_HAS_NO_DATA = 42204
     REQUEST_NOT_ALLOWED = 40501
+    NOT_PDF_FILE = 40001
+    PROCESSING_PDF_FILE_ERROR = 40002
     
 class StatusCodes:
     """狀態碼與訊息的對應類"""
@@ -26,15 +26,16 @@ class StatusCodes:
         42202: {
             "message": "Missing boundary in multipart",
         },
-        42203: {
-            "message": "filed no data",
-        },
-        42204: {
-            "message": "filed has no data",
-        },
         40501:{
             "message": "request not allowed"
+        },
+        40001:{
+            "message": "File type not supported. Please upload a PDF file"
+        },
+        40002:{
+            "message:": "Error processing PDF file"
         }
+    
     }
 
     @classmethod

@@ -4,9 +4,6 @@ from fastapi.exceptions import RequestValidationError
 from starlette.exceptions import HTTPException as StarletteHTTPException
 from model.Result import *
 
-StarletteHTTPExceptionHandlerCode = {"Field required" : 42201,"Missing boundary in multipart.":42202}
-RequestValidationErrorHandlerCode={}
-HTTPExceptionHandler={}
 
 # fastapi 自訂的exception 例如: 以get訪問
 async def StarletteHTTPExceptionHandler(request: Request, exc: StarletteHTTPException):
@@ -40,14 +37,22 @@ async def HTTPExceptionHandler(request: Request, exc: HTTPException):
         # 捕獲詳細錯誤訊息
     status_code = exc.status_code
     detail = exc.detail
-
+    # content:Any
     # 500改成415
     if status_code == 500:
         status_code=415
+
+    if detail is Result:
+        print("detail is Result")
+        content=detail.to_dict()
+    else:
+        print("aaaaaaa")
+        content=Result.error_with_message(detail).set_code(status_code).to_dict()
     return JSONResponse(
         status_code=status_code,
         # content={"message": f"Oops! {exc.name} did something. There goes a rainbow..."},
         # content={"message": f"Oops! did something. There goes a rainbow..."},
-        content=Result.error_with_message(detail).set_code(status_code).to_dict(),
+        # content=Result.error_with_message(detail).set_code(status_code).to_dict(),
+        content=content,
     )
 
