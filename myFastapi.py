@@ -1,6 +1,7 @@
 from typing import List, Dict,Any
 from fastapi import FastAPI, UploadFile, File, Request, HTTPException
 from fastapi.middleware import Middleware
+from fastapi.middleware.cors import CORSMiddleware
 from starlette.responses import JSONResponse
 from utils.myPDFPlumber import *
 import pandas as pd
@@ -14,6 +15,16 @@ middleware = [
 ]
 
 app = FastAPI(middleware=middleware)
+app = FastAPI()
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["http://localhost:8080"],  # Frontend origin
+    allow_credentials=True,
+    allow_methods=["GET", "POST"],  # Allowed HTTP methods
+    allow_headers=["*"],  # Allow all headers
+)
+
 limiter = Limiter(key_func=get_remote_address)
 # 注册 UnicornException 的处理器
 app.add_exception_handler(StarletteHTTPException, StarletteHTTPExceptionHandler)
@@ -21,6 +32,9 @@ app.add_exception_handler(RequestValidationError, RequestValidationErrorHandler)
 app.add_exception_handler(HTTPException, HTTPExceptionHandler)
 app.add_exception_handler(RateLimitExceeded, rate_limit_errorHandler)
 
+# @app.get("/get")
+# async def aaaaa(request: Request):
+#     return Result.success().to_dict()
 
 @app.post("/uploadpdf/")
 @limiter.limit("5/minute")

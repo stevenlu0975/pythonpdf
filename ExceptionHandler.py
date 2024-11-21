@@ -15,7 +15,7 @@ async def StarletteHTTPExceptionHandler(request: Request, exc: StarletteHTTPExce
         status_code=status_code,
         content=Result.error_with_message(detail).set_code(status_code).to_dict(),
     )
-
+    
 #422 沒有contenttype等等 
 async def RequestValidationErrorHandler(request: Request, exc: RequestValidationError):
     errors = exc.errors()  
