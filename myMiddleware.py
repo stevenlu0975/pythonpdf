@@ -5,11 +5,10 @@ from starlette.responses import JSONResponse
 from model.Result import *
 
 import time
-INTERCEPT_PATHS = ["/", "/uploadpdf/"]
+INTERCEPT_PATHS = ["/", "/uploadpdf/","/user"]
 UPLOAD_FILE_PATHS =["/uploadpdf/"]
 class PathMiddleWare(BaseHTTPMiddleware):
     async def dispatch(self,request: Request, call_next):
-        INTERCEPT_PATHS = ["/", "/uploadpdf/"]
 
         print("request path : "+request.url.path)
 
@@ -29,12 +28,13 @@ class PathMiddleWare(BaseHTTPMiddleware):
 class UploadFIleMiddleWare(BaseHTTPMiddleware):
     async def dispatch(self,request: Request, call_next):
         print("middleware 2 ") 
-        if request.method =='GET':
-            return JSONResponse(
-                    status_code=422,  
-                    content=Result.error(StatusCodeEnum.REQUEST_METHOD_ERROR).to_dict()
-            )
+
         if request.url.path in UPLOAD_FILE_PATHS:
+            if request.method =='GET':
+                return JSONResponse(
+                        status_code=422,  
+                        content=Result.error(StatusCodeEnum.REQUEST_METHOD_ERROR).to_dict()
+                )
             content_type = request.headers.get("Content-Type", "")
             if not content_type:
                 return JSONResponse(

@@ -15,7 +15,7 @@ middleware = [
 ]
 
 app = FastAPI(middleware=middleware)
-app = FastAPI()
+
 
 app.add_middleware(
     CORSMiddleware,
@@ -32,9 +32,9 @@ app.add_exception_handler(RequestValidationError, RequestValidationErrorHandler)
 app.add_exception_handler(HTTPException, HTTPExceptionHandler)
 app.add_exception_handler(RateLimitExceeded, rate_limit_errorHandler)
 
-# @app.get("/get")
-# async def aaaaa(request: Request):
-#     return Result.success().to_dict()
+@app.get("/user")
+async def aaaaa(request: Request):
+    return "hello world"
 
 @app.post("/uploadpdf/")
 @limiter.limit("5/minute")
