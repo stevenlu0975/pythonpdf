@@ -37,7 +37,7 @@ app.add_exception_handler(RateLimitExceeded, rate_limit_errorHandler)
 async def aaaaa(request: Request):
     return "hello world"
 
-@app.post("/uploadpdf/")
+@app.post("/uploadpdf")
 @limiter.limit("5/minute")
 async def upload_pdf(file: UploadFile,request: Request):
    

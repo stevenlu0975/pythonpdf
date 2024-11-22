@@ -6,14 +6,15 @@ from model.Result import *
 
 import time
 INTERCEPT_PATHS = ["/", "/uploadpdf","/user"]
-UPLOAD_FILE_PATHS =["/uploadpdf/"]
+UPLOAD_FILE_PATHS =["/uploadpdf"]
 class PathMiddleWare(BaseHTTPMiddleware):
     async def dispatch(self,request: Request, call_next):
 
         print("request path : "+request.url.path)
 
         # 若請求路徑不在 allowed_paths 中，返回 500 錯誤
-        if not any(request.url.path.startswith(path) for path in INTERCEPT_PATHS):     
+        if request.url.path not in INTERCEPT_PATHS:
+        # if not any(request.url.path.startswith(path) for path in INTERCEPT_PATHS):     
             return JSONResponse(status_code=404, content=Result.error(StatusCodeEnum.REQUEST_PATH_NOT_ALLOWED).to_dict())
         start_time = time.perf_counter()
         print("middleware 1 ") 
